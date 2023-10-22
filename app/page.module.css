@@ -1,11 +1,20 @@
 .root, .loaded{
   width: 100vw;
   height: 100vh;
+  background-color: #31303b;
+}
+
+.loading{
+  color: white;
+  font-size: xx-large;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .loaded{
   padding: 20px;
-  background-color: #31303b;
 }
 
 .display{

@@ -206,7 +206,7 @@ export default function Home() {
           {/* <p ref={pRef} style={{ wordWrap: "break-word", width: "1200px", position: "fixed", top: "0px", left: "0px", color: "gray" }}></p> */}
           {/* <div ref={dRef} style={{ width: "50px", height: "50px", position: "absolute", "backgroundColor": "aqua", "top": "calc(100vh / 3)", "left": "50vw", borderRadius: "25px", transform: "translate(-50%, -50%)"}}></div> */}
         </div>
-        : <div>loading..</div>
+        : <div className={styles.loading}>loading..</div>
       }
     </main>
   )
