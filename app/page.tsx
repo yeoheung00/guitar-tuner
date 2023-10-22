@@ -113,9 +113,14 @@ export default function Home() {
         let color = "gray";
         if (note != -1) {
           color = "#ff0000";
-          if (Math.abs(accuracy) < 0.25) color = "#ffff00";
-          if (Math.abs(accuracy) < 0.1) color = "#00ff00";
-        }
+          if (Math.abs(accuracy) < 0.25) {
+            color = "#ffff00";
+          }
+          if (Math.abs(accuracy) < 0.1) {
+            color = "#00ff00";
+          }
+          needleRef.current.style.setProperty("box-shadow", "0 0 20px " + color);
+        } else needleRef.current.style.setProperty("box-shadow", "none");
         needleRef.current.style.setProperty("background-color", color);
       }
 
@@ -175,6 +180,10 @@ export default function Home() {
       {load ?
         <div className={styles.loaded}>
           <div className={styles.display}>
+            <div className={styles.light}></div>
+            <div className={styles.lowlight}></div>
+            <div className={styles.notelight}></div>
+            <div className={styles.highlight}></div>
             <div className={styles.leftbad}></div>
             <div className={styles.left1}></div>
             <div className={styles.left2}></div>
@@ -186,8 +195,7 @@ export default function Home() {
             <div className={styles.right2}></div>
             <div className={styles.right3}></div>
             <div className={styles.rightbad}></div>
-            <div className={styles.needle} ref={needleRef}>
-            </div>
+            <div className={styles.needle} ref={needleRef}></div>
             <div className={styles.shadow}></div>
             <div className={styles.note} ref={noteRef}>note</div>
             <div className={styles.low} ref={lowRef}>low</div>
