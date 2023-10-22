@@ -10,7 +10,7 @@ export default function Home() {
 
   const [load, setLoad] = useState(false);
   const pRef = useRef<HTMLParagraphElement>(null);
-  const upRef = useRef<HTMLDivElement>(null);
+  const needleRef = useRef<HTMLDivElement>(null);
   const downRef = useRef<HTMLDivElement>(null);
   const noteRef = useRef<HTMLDivElement>(null);
   const highRef = useRef<HTMLDivElement>(null);
@@ -64,7 +64,8 @@ export default function Home() {
       //console.log("analyser", analyser);
       //console.log("dataArray", dataArray);
       console.log("start");
-      requestAnimationFrame(callback);
+      //requestAnimationFrame(callback);
+      setInterval(callback, 300);
     }
   }
 
@@ -82,9 +83,6 @@ export default function Home() {
       let targetPitch = -1;
       let [low, high] = [-1, -1]
       let accuracy = 0;
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const rate = 100;
 
       if (pitch >= 25.96 && pitch <= 4186.01) {
         isRun = true;
@@ -97,49 +95,37 @@ export default function Home() {
         //graph.push(accuracy);
         //if (graph.length > rate) graph.shift();
       }
-      //graph.push(accuracy);
-      //console.log("graph", graph);
-      if (noteRef.current) {
-        if (note != -1)
+
+      if (noteRef.current && lowRef.current && highRef.current) {
+        if (note != -1) {
           noteRef.current.innerText = singleNoteValue + octave;
-        else noteRef.current.innerText = "--";
-      }
-      if(highRef.current && lowRef.current) {
-        if(note != -1){
-          highRef.current.innerText = noteStrings[(note+10)%12];
-          lowRef.current.innerText = noteStrings[(note+8)%12];
+          lowRef.current.innerText = noteStrings[(note + 8) % 12] + Math.floor((note + 8) / 12);
+          highRef.current.innerText = noteStrings[(note + 10) % 12] + Math.floor((note + 10) / 12);
         } else {
-          highRef.current.innerText = "--";
+          noteRef.current.innerText = "--";
           lowRef.current.innerText = "--";
+          highRef.current.innerText = "--";
         }
       }
-      // if (pRef.current) {
-      //   pRef.current.innerText = `note_id: ${note}\noctave: ${octave}\nnote: ${singleNoteValue}\nfreq: ${pitch}hz\ntarget: ${targetPitch}hz\nnear: ${low}, ${high}\naccuracy: ${accuracy}%`;
-      // }
 
-      if (upRef.current) {
-        let height = 0;
-        let color = "green";
-        if (accuracy > 0) {
-          height = accuracy > 0.5 ? 100 : accuracy * 200;
-        } else height = 0;
-        if(accuracy>0.1) color = "yellow"
-        if(accuracy>0.25) color = "red"
-        upRef.current.style.setProperty("height", height + "%");
-        upRef.current.style.setProperty("background-color", color);
+      if (needleRef.current) {
+        needleRef.current.style.setProperty("left", accuracy * 100 + 50 + "%");
+        let color = "gray";
+        if (note != -1) {
+          color = "#ff0000";
+          if (Math.abs(accuracy) < 0.25) color = "#ffff00";
+          if (Math.abs(accuracy) < 0.1) color = "#00ff00";
+        }
+        needleRef.current.style.setProperty("background-color", color);
       }
 
-      if (downRef.current) {
-        let height = 0;
-        let color = "green";
-        if (accuracy < 0) {
-          height = accuracy < -0.5 ? 100 : accuracy * -200;
-        } else height = 0;
-        if(accuracy<-0.1) color = "yellow";
-        if(accuracy<-0.25) color = "red";
-        downRef.current.style.setProperty("height", height + "%");
-        downRef.current.style.setProperty("background-color", color);
+      //graph.push(accuracy);
+      //console.log("graph", graph);
+
+      if (pRef.current) {
+        pRef.current.innerText = `note_id: ${note}\noctave: ${octave}\nnote: ${singleNoteValue}\nfreq: ${pitch}hz\ntarget: ${targetPitch}hz\nnear: ${low}, ${high}\naccuracy: ${accuracy}%`;
       }
+
       // if (dRef.current) {
       //   dRef.current.style.setProperty("left", width / 2 + width / 2 * accuracy + "px");
       //   // if(dRef.current.offsetLeft > 10) 
@@ -169,7 +155,7 @@ export default function Home() {
       //   }
       // }
     } else console.log("analyser is null");
-    requestAnimationFrame(callback);
+    //requestAnimationFrame(callback);
   }
 
   function noteFromPitch(frequency: number) {
@@ -189,17 +175,26 @@ export default function Home() {
       {load ?
         <div className={styles.loaded}>
           <div className={styles.display}>
-            <div className={styles.up}>
-              <div ref={upRef} className={styles.graphup}></div>
-              <div ref={highRef} className={styles.high}></div>
+            <div className={styles.leftbad}></div>
+            <div className={styles.left1}></div>
+            <div className={styles.left2}></div>
+            <div className={styles.leftgood}></div>
+            <div className={styles.left3}></div>
+            <div className={styles.correct}></div>
+            <div className={styles.right1}></div>
+            <div className={styles.rightgood}></div>
+            <div className={styles.right2}></div>
+            <div className={styles.right3}></div>
+            <div className={styles.rightbad}></div>
+            <div className={styles.needle} ref={needleRef}>
             </div>
+            <div className={styles.shadow}></div>
+            <div className={styles.note} ref={noteRef}>note</div>
+            <div className={styles.low} ref={lowRef}>low</div>
+            <div className={styles.high} ref={highRef}>high</div>
+          </div>
+          <div className={styles.datas}>
 
-            <div ref={noteRef} className={styles.note}>--</div>
-
-            <div className={styles.down}>
-              <div ref={downRef} className={styles.graphdown}></div>
-              <div ref={lowRef} className={styles.low}></div>
-            </div>
           </div>
           {/* {run ? <button onClick={() => { setRun(false); counter = 0; clearInterval(interval); }}>stop</button> : <button onClick={() => { setRun(true); start(); }}>start</button>} */}
           {/* <canvas ref={canvRef} style={{ width: "100vw", height: "100vh" }}></canvas> */}
